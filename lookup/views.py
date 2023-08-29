@@ -5,7 +5,6 @@ from twilio.rest import Client
 from enum  import Enum
 ################
 from django.shortcuts import render, HttpResponse 
-from django.views.decorators.csrf import csrf_exempt
 ################
 from weather.settings import WEATHER_KEY as key
 from weather.settings import TWILIO_ACCOUNT_SID as account_sid 
@@ -87,7 +86,7 @@ def get_weather_details(request):
         context = {'Components':{}, }
         return render(request, 'weather.html', context)
    
-@csrf_exempt 
+
 def twilio_getweather_details(request):
     if request.method == 'POST':
         payload = json.loads(request.body) 
