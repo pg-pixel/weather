@@ -10,6 +10,6 @@ data1 = {
 
 url = r'http://127.0.0.1:8000/whatsapp/' 
 
-response = requests.post(url, json=data1) 
+response = requests.post(url, json=data) 
 
 print(response)

@@ -89,14 +89,16 @@ def get_weather_details(request):
    
 @csrf_exempt
 def twilio_getweather_details(request):
-    print('*****')
-    print(request.body.decode('utf-8'))
-    print('*****')
+    
     if request.method == 'POST':
-        payload = json.loads(request.body) 
-        print(payload)
-        city = payload.get('Body', '') 
-        _from = list(payload.get('From', '').split(':'))[1]
+       
+        load = list(request.body.decode('utf-8').strip('&'))
+        for ele in load:
+            key_value = list(ele.strip('='))
+            if key_value[0] == 'Body':
+                city = key_value[1]
+            if key_value[0] == 'From':
+                _from = key_value[-10::]
         
         context = Application_logic.solution(city) 
         
