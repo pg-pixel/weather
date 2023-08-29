@@ -89,6 +89,9 @@ def get_weather_details(request):
    
 @csrf_exempt
 def twilio_getweather_details(request):
+    print('*****')
+    print(request.body.decode('utf-8'))
+    print('*****')
     if request.method == 'POST':
         payload = json.loads(request.body) 
         print(payload)
