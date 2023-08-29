@@ -91,7 +91,7 @@ def get_weather_details(request):
 def twilio_getweather_details(request):
     if request.method == 'POST':
         payload = json.loads(request.body) 
-        
+        print(payload)
         city = payload.get('Body', '') 
         _from = list(payload.get('From', '').split(':'))[1]
         
