@@ -23,13 +23,23 @@ class Application_logic:
 
     @staticmethod
     def get_city_latitude_longitude(city):
-        latitude_longitude_url = f'http://api.openweathermap.org/geo/1.0/direct?q={city},IN&limit=5&appid={key}'
+        try:
+            latitude_longitude_url = f'http://api.openweathermap.org/geo/1.0/direct?q={city},IN&limit=5&appid={key}'
+            
+            latitude_longitude_response = requests.get(latitude_longitude_url).json()
+            lat = latitude_longitude_response[0]['lat'] 
+            lon = latitude_longitude_response[0]['lon'] 
+            msg = f"City found"
+        except Exception as e:
+            msg =f"City Not found, returning default value" 
+            
+            latitude_longitude_url = f'http://api.openweathermap.org/geo/1.0/direct?q=Kota,IN&limit=5&appid={key}'
+            
+            latitude_longitude_response = requests.get(latitude_longitude_url).json()
+            lat = latitude_longitude_response[0]['lat'] 
+            lon = latitude_longitude_response[0]['lon'] 
         
-        latitude_longitude_response = requests.get(latitude_longitude_url).json()
-        lat = latitude_longitude_response[0]['lat'] 
-        lon = latitude_longitude_response[0]['lon'] 
-        
-        return lat, lon, city
+        return lat, lon, city, msg
     
     @staticmethod
     def get_aqi(latitude, longitude):
@@ -44,12 +54,14 @@ class Application_logic:
     
     @staticmethod
     def solution(city):
-        latitude, longitude, city = Application_logic.get_city_latitude_longitude(city) 
+        latitude, longitude, city, msg = Application_logic.get_city_latitude_longitude(city) 
         
         context = Application_logic.get_aqi(latitude, longitude)
-        context['City'] = city 
+        
+        context['City'] = city if msg == f"City found" else f"Kota"
         state = AQI_Index[f"_{str(context['AQI'])}"].value
         context['AQI'] = state
+        context['msg'] = msg
         
         return context
     
@@ -58,8 +70,12 @@ class Application_logic:
         
         client = Client(account_sid, auth_token) 
         if message_dictionary:
-            message = f"Your city is {message_dictionary['City']}. " \
-                      f"Current AQI is: {message_dictionary['AQI']}. " 
+            if message_dictionary['msg'] == f'City found':
+                message = f"Your city is {message_dictionary['City']}. " \
+                          f"Current AQI is: {message_dictionary['AQI']}. " 
+            else:
+                message = f"City Not found!.Default city is: {message_dictionary['City']}. " \
+                          f"Current AQI is: {message_dictionary['AQI']}. "
         else:
             message = f"Welcome to PG's Weather App. Kindly type <city name> for your city information." \
                       f" Note: Only Indian cities supported so far. Please type your city name only. "
@@ -67,7 +83,7 @@ class Application_logic:
         message = client.messages.create(
             from_='whatsapp:+14155238886',
             body=f'{message}',
-            to=f'whatsapp:{to_number}'
+            to=f'whatsapp:+91{to_number}'
             )
         
         
@@ -89,16 +105,18 @@ def get_weather_details(request):
    
 @csrf_exempt
 def twilio_getweather_details(request):
-    
     if request.method == 'POST':
-       
-        load = list(request.body.decode('utf-8').strip('&'))
+        
+        load = request.body.decode('utf-8').split('&')
+        
         for ele in load:
-            key_value = list(ele.strip('='))
+            
+            key_value = ele.split('=')
             if key_value[0] == 'Body':
                 city = key_value[1]
             if key_value[0] == 'From':
-                _from = key_value[-10::]
+                _from = key_value[1][-10::]
+                
         
         context = Application_logic.solution(city) 
         
