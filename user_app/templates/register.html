@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Register-PG's Weather App
+{% endblock title %}
+
+{% block content %}
+    <div class = 'container text-center'>
+        </br>
+        <h1><p>Kindly send 'join chest-settlers' to '+14155238886' on Whatsapp Before registering...</p></h1>
+    </br>
+        <h2>Welcome to PG's Weather App. Let's Register</h2>
+        {% if messages %}
+            {% for msg in messages %}
+                <div class="alert alert-success alert-dismissible fade show d-flex justify-content-between align-items-center" role="alert">
+                    {{ msg }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST" class="col-md-6 offset-md-3 mt-5">
+            {% csrf_token %}
+            {{registration_form|crispy}}
+            <button class="btn btn-success mb-5" type='submit'>Register</button>
+        </form>
+        
+    </div>
+{% endblock content %}

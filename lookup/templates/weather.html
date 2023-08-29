@@ -1,0 +1,50 @@
+{% extends 'base.html' %} 
+
+{% block title %}
+    Weather
+{% endblock title %} 
+
+{% block content %}
+    <br>
+
+    <form method = 'POST' class='row'>
+        {% csrf_token %}
+        <input type="text" class="form-control col-lg-10"  name="City" placeholder="Search the city (Only Indian cities allowed)">
+        <button type="submit" class="btn btn-primary col-lg-2">GET AQI</button>
+    </form> 
+
+    <br>
+
+    {% if Components%}
+    <p>Your searched city is {{City}}</p>
+    <p>Your  city's AQI is {{AQI}}</p>
+    <p> Atmosphere's details are as follows</p>
+        <table class="table">
+            <thead>
+            <tr >
+                <th scope="col">SO2	</th>
+                <th scope="col">NO2	</th>
+                <th scope="col">PM10</th>
+                <th scope="col">PM2.5</th>
+                <th scope="col">O3</th>
+                <th scope="col">CO</th>
+            </tr>
+            </thead>
+            <tbody>
+                
+            <tr >
+                <th>{{Components.so2}}</th>
+                <th>{{Components.no2}}</th>
+                <th>{{Components.pm10}}</th>
+                <th>{{Components.pm2_5}}</th>
+                <th>{{Components.o3}}</th>
+                <th>{{Components.co}}</th>
+            </tr>
+                
+            
+            </tbody>
+        </table>
+    {% endif%}
+
+
+{% endblock content %} 
