@@ -31,10 +31,10 @@ TWILIO_ACCOUNT_SID= env("DJANGO_TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = env("DJANGO_TWILIO_AUTH_TOKEN")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env("DJANGO_SECRET_KEY")
+DEBUG = env("DJANGO_DEBUG")
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['pgweather.up.railway.app', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://pgweather.up.railway.app']
 
 # Application definition
 
